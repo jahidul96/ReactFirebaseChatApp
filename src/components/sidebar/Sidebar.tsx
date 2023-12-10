@@ -1,8 +1,6 @@
 import { Avatar, Box, Flex, Link, Text } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
-import SideBarButton from "./SideBarButton";
-import { BiLogOut } from "react-icons/bi";
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
 
@@ -21,10 +19,16 @@ const Sidebar = () => {
             flexDirection="column"
         >
             {/* top profile section */}
-            <Box bg={AppColors.graySilver} py={3}>
+            <Box
+                bg={AppColors.graySilver}
+                h={62}
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+            >
                 <Flex justifyContent="space-between" alignItems="center" px={4}>
                     <Link
-                        to={"/profile"}
+                        to={"/"}
                         as={RouterLink}
                         _hover={{ textDecoration: "none" }}
                         pl={2}
@@ -50,14 +54,14 @@ const Sidebar = () => {
                 </Flex>
             </Box>
 
-            <Box flex={1} mt={5} overflowY={"auto"}>
+            <Box flex={1} pt={3} overflowY={"auto"}>
                 {usersChats.map((user: number) => (
                     <ChatProfileComp key={user} id={user} />
                 ))}
             </Box>
 
             {/* logout button */}
-            <SideBarButton text="Logout" icon={<BiLogOut size={22} />} />
+            {/* <SideBarButton text="Logout" icon={<BiLogOut size={22} />} /> */}
         </Box>
     );
 };

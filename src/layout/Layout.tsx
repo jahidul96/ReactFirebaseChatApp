@@ -12,15 +12,15 @@ const Layout = ({ children }: layoutInterface) => {
     const showSidebar = pathname == "/auth" ? false : true;
     return (
         <Flex>
-            {/* sidebar on the left */}
+            {/* sidebar/chat list */}
             {showSidebar ? (
-                <Box w={"300px"}>
+                <Box w={"350px"}>
                     <Sidebar />
                 </Box>
             ) : null}
 
-            {/* the page content on the right */}
-            <Box flex={1} w={"calc(100% - 300px)"} mx={"auto"}>
+            {/* chat content */}
+            <Box w={"calc(100% - 350px)"} height="100vh">
                 {children}
             </Box>
         </Flex>

@@ -6,7 +6,7 @@ interface chatprofilecompInterface {
 }
 function ChatProfileComp({ id }: chatprofilecompInterface) {
     return (
-        <Box cursor="pointer" mb={5} px={3}>
+        <Box cursor="pointer" py={4} px={3} _hover={{ bg: "#555" }}>
             <Link
                 to={`/chat/${id}`}
                 _hover={{ textDecoration: "none" }}
