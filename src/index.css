@@ -20,6 +20,14 @@
     overflow: hidden;
     cursor: pointer;
 }
+.gallery_icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-right: 20px;
+}
 
 /* Style to hide the input */
 .imageInput {

@@ -1,4 +1,6 @@
 export const AppColors = {
-    graySilver: "gray.500",
+    graySilver: "#131a1e",
     primary: "#000",
+    ashGray: "#555",
+    greenDark: "#00352c",
 };

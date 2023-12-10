@@ -1,5 +1,7 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { AppColors } from "../../utils/Colors";
+import { IoSearch } from "react-icons/io5";
+import { FaEllipsisVertical } from "react-icons/fa6";
 
 function ChatNav() {
     return (
@@ -16,6 +18,13 @@ function ChatNav() {
                     <Box ml={5}>
                         <Text fontSize={15}>Jahidul Islam</Text>
                         <Text fontSize={12}>Contact info</Text>
+                    </Box>
+                </Flex>
+
+                <Flex>
+                    <IoSearch size={20} cursor="pointer" />
+                    <Box ml={8}>
+                        <FaEllipsisVertical size={20} cursor="pointer" />
                     </Box>
                 </Flex>
             </Flex>

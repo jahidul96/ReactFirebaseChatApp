@@ -20,7 +20,7 @@ const Layout = ({ children }: layoutInterface) => {
             ) : null}
 
             {/* chat content */}
-            <Box w={"calc(100% - 350px)"} height="100vh">
+            <Box w={showSidebar ? "calc(100% - 350px)" : "100%"} height="100vh">
                 {children}
             </Box>
         </Flex>

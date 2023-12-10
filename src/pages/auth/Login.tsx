@@ -38,7 +38,7 @@ function Login({ onClick }: loginInterFace) {
                         textDecoration="underline"
                         mb={5}
                     >
-                        Memory_Sharing_App
+                        ChatApp
                     </Text>
 
                     {/* inputs/email/password/name/profile pic etc */}
