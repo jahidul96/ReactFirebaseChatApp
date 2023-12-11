@@ -1,12 +1,24 @@
 import { Avatar, Box, Flex, Link, Text } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Navigate, Link as RouterLink } from "react-router-dom";
 
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/firebase_config";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContextProvider";
 
 const usersChats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const Sidebar = () => {
+    const context = useContext(AppContext);
+    const { setIsLogged } = context || {};
+
+    const appSignOut = () => {
+        signOut(auth).then((_) => {
+            setIsLogged(false);
+        });
+    };
     return (
         <Box
             height={"100vh"}
@@ -28,7 +40,8 @@ const Sidebar = () => {
             >
                 <Flex justifyContent="space-between" alignItems="center" px={4}>
                     <Link
-                        to={"/"}
+                        // to={"/"}
+                        onClick={appSignOut}
                         as={RouterLink}
                         _hover={{ textDecoration: "none" }}
                         pl={2}

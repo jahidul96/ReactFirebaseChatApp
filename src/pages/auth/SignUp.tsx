@@ -6,18 +6,32 @@ import {
     Stack,
     Text,
     Container,
+    Spinner,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import ImagePickingWithPrev from "../../components/ImagePickingWithPreview";
+import { ToastContainer, toast } from "react-toastify";
+import { uploadFileToStorage } from "../../firebase/Fb_Storage";
+import { fbUserRegister } from "../../firebase/Fb_Auth";
+import { addUserToFB } from "../../firebase/Fb_Firestore";
+import { AppContext } from "../../context/AppContextProvider";
+
 interface signupInterFace {
     onClick: any;
 }
+
 const SignUp = ({ onClick }: signupInterFace) => {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const context = useContext(AppContext);
+    const { setIsLogged } = context || {};
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+        const file = e.target.files[0];
         if (file) {
             setImageFile(file);
             const reader = new FileReader();
@@ -30,26 +44,56 @@ const SignUp = ({ onClick }: signupInterFace) => {
         }
     };
 
-    // const handleImageUpload = () => {
-    //     if (imageFile) {
-    //       const storageRef = firebase.storage().ref();
-    //       const imageRef = storageRef.child(`images/${imageFile.name}`);
+    const signUpUser = (e: any) => {
+        e.preventDefault();
 
-    //       imageRef.put(imageFile)
-    //         .then((snapshot) => {
-    //           // Image uploaded successfully, get the download URL
-    //           snapshot.ref.getDownloadURL().then((downloadURL) => {
-    //             // Use this URL to display the image or perform other operations
-    //             console.log('File available at', downloadURL);
-    //             // You can also set this URL in state to display the uploaded image
-    //           });
-    //         })
-    //         .catch((error) => {
-    //           // Handle any errors that occurred during the upload
-    //           console.error('Error uploading file: ', error);
-    //         });
-    //     }
-    //   };
+        setLoading(true);
+        if (!name || !email || !password || !imageUrl) {
+            setLoading(false);
+            return toast.warn("All Fields required!", {
+                position: "bottom-right",
+            });
+        }
+
+        const userData = {
+            name,
+            email,
+            profilePic: "",
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            bio: "I am using ChatApp",
+            uid: "",
+        };
+
+        if (imageFile) {
+            uploadFileToStorage(imageFile)
+                .then((url: any) => {
+                    fbUserRegister(email, password).then((uid: any) => {
+                        userData.uid = uid;
+                        userData.profilePic = url;
+                        addUserToFB(userData, uid);
+                        setLoading(false);
+                        setIsLogged(true);
+
+                        return toast.success("Profile Created Succesfully!", {
+                            position: "bottom-right",
+                        });
+                    });
+                })
+                .catch((_) => {
+                    setLoading(false);
+                    return toast.warn("Profile Pic uploading Problem!", {
+                        position: "bottom-right",
+                    });
+                });
+        } else {
+            setLoading(false);
+            return toast.warn("Add a profile pic it's a must!", {
+                position: "bottom-right",
+            });
+        }
+    };
+
     return (
         <Box
             display={"flex"}
@@ -80,9 +124,21 @@ const SignUp = ({ onClick }: signupInterFace) => {
 
                 {/* inputs/email/password/name/profile pic etc */}
                 <Stack spacing={5}>
-                    <Input placeholder="Name" size="md" />
-                    <Input placeholder="Email" size="md" />
-                    <Input placeholder="Password" size="md" />
+                    <Input
+                        placeholder="Name"
+                        size="md"
+                        onChange={(e) => setName(e.target?.value)}
+                    />
+                    <Input
+                        placeholder="Email"
+                        size="md"
+                        onChange={(e) => setEmail(e.target?.value)}
+                    />
+                    <Input
+                        placeholder="Password"
+                        size="md"
+                        onChange={(e) => setPassword(e.target?.value)}
+                    />
 
                     {/* profile pic take */}
                     <ImagePickingWithPrev
@@ -91,8 +147,15 @@ const SignUp = ({ onClick }: signupInterFace) => {
                     />
                 </Stack>
 
-                <Button colorScheme="teal" variant="solid" w="100%" my={5}>
-                    SignUp
+                <Button
+                    colorScheme="teal"
+                    variant="solid"
+                    w="100%"
+                    my={5}
+                    onClick={signUpUser}
+                    disabled={loading}
+                >
+                    {loading ? <Spinner /> : "SignUp"}
                 </Button>
 
                 <Flex justifyContent="center">
@@ -101,6 +164,9 @@ const SignUp = ({ onClick }: signupInterFace) => {
                         SignUp!
                     </Button>
                 </Flex>
+
+                {/* toast message  */}
+                <ToastContainer />
             </Box>
         </Box>
     );

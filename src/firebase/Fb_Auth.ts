@@ -7,8 +7,8 @@ import { auth } from "./firebase_config";
 export const fbUserRegister = (email: any, password: any) => {
     const promise = new Promise((resolve, reject) => {
         createUserWithEmailAndPassword(auth, email, password)
-            .then((info) => {
-                resolve(info);
+            .then((user) => {
+                resolve(user.user.uid);
             })
             .catch((err) => {
                 reject(err);
@@ -22,7 +22,7 @@ export const signinWithFb = (email: any, password: any) => {
     const promise = new Promise((resolve, reject) => {
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
-                resolve(user);
+                resolve(user.user.uid);
             })
             .catch((err) => {
                 reject(err);

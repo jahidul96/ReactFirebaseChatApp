@@ -6,6 +6,8 @@ import "./index.css";
 import { mode } from "@chakra-ui/theme-tools";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import AppContextProvider from "./context/AppContextProvider.tsx";
 
 const styles = {
     global: (props: any) => ({
@@ -26,10 +28,12 @@ const theme = extendTheme({ config, styles });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <BrowserRouter>
-            <ChakraProvider theme={theme}>
-                <App />
-            </ChakraProvider>
-        </BrowserRouter>
+        <AppContextProvider>
+            <BrowserRouter>
+                <ChakraProvider theme={theme}>
+                    <App />
+                </ChakraProvider>
+            </BrowserRouter>
+        </AppContextProvider>
     </React.StrictMode>
 );
