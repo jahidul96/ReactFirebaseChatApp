@@ -1,13 +1,20 @@
 import { Box, Button, Flex, Tooltip } from "@chakra-ui/react";
-import { AppColors } from "../../utils/Colors";
+import { AppColors } from "../utils/Colors";
 
 interface sidebarbtnInterface {
     text: string;
     icon: any;
+    onClick: any;
 }
-function SideBarButton({ text, icon }: sidebarbtnInterface) {
+function IconTextButton({ text, icon, onClick }: sidebarbtnInterface) {
     return (
-        <Box cursor="pointer" pb={3} px={3} bg={AppColors.graySilver}>
+        <Box
+            onClick={onClick}
+            cursor="pointer"
+            pb={3}
+            px={3}
+            bg={AppColors.graySilver}
+        >
             <Tooltip
                 hasArrow
                 label={text}
@@ -41,4 +48,4 @@ function SideBarButton({ text, icon }: sidebarbtnInterface) {
     );
 }
 
-export default SideBarButton;
+export default IconTextButton;

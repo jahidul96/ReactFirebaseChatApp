@@ -10,4 +10,5 @@ export interface userDataInterface {
     createdAt: Date;
     updatedAt: Date;
     bio: string;
+    email: string;
 }

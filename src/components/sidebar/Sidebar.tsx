@@ -1,24 +1,24 @@
-import { Avatar, Box, Flex, Link, Text } from "@chakra-ui/react";
-import { Navigate, Link as RouterLink } from "react-router-dom";
+import { Avatar, Box, Flex } from "@chakra-ui/react";
 
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase/firebase_config";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContextProvider";
+import { FaArrowRight } from "react-icons/fa";
+import ProfileSection from "./ProfileSection";
+import { MdCancel } from "react-icons/md";
 
 const usersChats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const Sidebar = () => {
     const context = useContext(AppContext);
-    const { setIsLogged } = context || {};
+    const { user } = context || {};
+    const [seeProfile, setSeeProfile] = useState(false);
 
-    const appSignOut = () => {
-        signOut(auth).then((_) => {
-            setIsLogged(false);
-        });
+    const changeToProfile = () => {
+        setSeeProfile(!seeProfile);
     };
+
     return (
         <Box
             height={"100vh"}
@@ -33,48 +33,46 @@ const Sidebar = () => {
             {/* top profile section */}
             <Box
                 bg={AppColors.graySilver}
-                h={62}
+                h={70}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
             >
-                <Flex justifyContent="space-between" alignItems="center" px={4}>
-                    <Link
-                        // to={"/"}
-                        onClick={appSignOut}
-                        as={RouterLink}
-                        _hover={{ textDecoration: "none" }}
-                        pl={2}
-                        cursor="pointer"
-                    >
-                        <Text fontWeight="bold" fontSize={17}>
-                            ChatApp
-                        </Text>
-                    </Link>
-                    <Link
-                        to={"/profile"}
-                        as={RouterLink}
-                        mt={1}
-                        cursor="pointer"
-                    >
+                <Flex justifyContent="space-between" alignItems="center" px={3}>
+                    {seeProfile ? (
+                        <Box></Box>
+                    ) : (
                         <Avatar
-                            size="sm"
+                            onClick={changeToProfile}
+                            size="md"
                             cursor="pointer"
-                            name="Dan Abrahmov"
-                            src="/avator.jpg"
+                            name="userProfilePic"
+                            src={user ? user.profilePic : "/avator.jpg"}
+                            borderWidth={3}
+                            borderColor={AppColors.greenDark}
                         />
-                    </Link>
+                    )}
+                    {/*  */}
+                    <Box onClick={changeToProfile} mt={1} cursor="pointer">
+                        {seeProfile ? (
+                            <MdCancel size={25} color="#fff" />
+                        ) : (
+                            <FaArrowRight size={22} color="#fff" />
+                        )}
+                    </Box>
                 </Flex>
             </Box>
 
-            <Box flex={1} pt={3} overflowY={"auto"}>
-                {usersChats.map((user: number) => (
-                    <ChatProfileComp key={user} id={user} />
-                ))}
-            </Box>
-
-            {/* logout button */}
-            {/* <SideBarButton text="Logout" icon={<BiLogOut size={22} />} /> */}
+            {/* profile or chats section */}
+            {seeProfile ? (
+                <ProfileSection />
+            ) : (
+                <Box flex={1} pt={3} overflowY={"auto"}>
+                    {usersChats.map((user: number) => (
+                        <ChatProfileComp key={user} id={user} />
+                    ))}
+                </Box>
+            )}
         </Box>
     );
 };
