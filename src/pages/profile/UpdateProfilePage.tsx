@@ -1,13 +1,30 @@
-import { Avatar, Box, Button, Container, Link, Text } from "@chakra-ui/react";
+import {
+    Avatar,
+    Box,
+    Button,
+    Container,
+    Input,
+    Link,
+    Text,
+} from "@chakra-ui/react";
 import { AppColors } from "../../utils/Colors";
 import { FaArrowLeft } from "react-icons/fa";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContextProvider";
 import { Link as RouterLink } from "react-router-dom";
 
 const UpdateProfilePage = () => {
     const context = useContext(AppContext);
     const { user } = context || {};
+    const [updatedName, setUpdatedName] = useState(user?.name);
+    const [updatedBio, setUpdatedBio] = useState(user?.bio);
+
+    const updateInfo = (e: any) => {
+        e.preventDefault();
+
+        console.log("name", updatedName);
+        console.log("bio", updatedBio);
+    };
     return (
         <Box>
             {/* Top profile navbar */}
@@ -35,26 +52,34 @@ const UpdateProfilePage = () => {
             </Box>
             <Container maxW={"container.md"}>
                 <Box w={"100%"} h={"calc(100vh - 70px)"} mt={10}>
-                    <Box display="flex" alignItems="center">
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                    >
                         <Avatar
-                            size="xl"
+                            size="2xl"
                             name="userProfilePic"
                             src={user ? user.profilePic : "/avator.jpg"}
                             borderWidth={3}
                             borderColor={AppColors.greenDark}
+                            _hover={{ opacity: 0.5 }}
                         />
-
-                        <Box ml={5} flex={1}>
-                            <Text fontSize={18} fontWeight="700">
-                                {user ? user.name : "Username"}{" "}
-                            </Text>
-                            <Text>
-                                {user ? user.email : "{user}@gamil.com"}{" "}
-                            </Text>
-                        </Box>
-
-                        <Button>Update</Button>
                     </Box>
+                    <Text my={3}>Name :</Text>
+                    <Input
+                        value={updatedName}
+                        onChange={(e) => setUpdatedName(e.target.value)}
+                    />
+                    <Text my={5}>Bio :</Text>
+                    <Input
+                        value={updatedBio}
+                        mb={5}
+                        mt={-2}
+                        onChange={(e) => setUpdatedBio(e.target.value)}
+                    />
+
+                    <Button onClick={updateInfo}>Update</Button>
                 </Box>
             </Container>
         </Box>

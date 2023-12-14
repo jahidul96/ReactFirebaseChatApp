@@ -6,8 +6,9 @@ import { IoCheckmarkDoneOutline } from "react-icons/io5";
 
 interface chatprofilecompInterface {
     id: number;
+    contact: boolean;
 }
-function ChatProfileComp({ id }: chatprofilecompInterface) {
+function ChatProfileComp({ id, contact }: chatprofilecompInterface) {
     return (
         <Tooltip label={"Last msg"} fontSize="smaller">
             <Flex
@@ -24,7 +25,7 @@ function ChatProfileComp({ id }: chatprofilecompInterface) {
                     cursor="pointer"
                     flex={1}
                 >
-                    <Flex>
+                    <Flex alignItems={contact ? "center" : ""}>
                         {/* profile pic */}
                         <Image
                             src="/avator.jpg"
@@ -38,23 +39,28 @@ function ChatProfileComp({ id }: chatprofilecompInterface) {
                             <Text fontSize={14} fontWeight="bold">
                                 Jahidul Islam
                             </Text>
-                            <Flex alignItems="center">
-                                <IoCheckmarkDoneOutline size={16} />
-                                <Text fontSize={12} ml={1}>
-                                    last msg
-                                </Text>
-                            </Flex>
+
+                            {contact ? null : (
+                                <Flex alignItems="center">
+                                    <IoCheckmarkDoneOutline size={16} />
+                                    <Text fontSize={12} ml={1}>
+                                        last msg
+                                    </Text>
+                                </Flex>
+                            )}
                         </Box>
                     </Flex>
                 </Link>
 
                 {/* time and delete features */}
-                <Box onClick={() => alert(123)}>
-                    <Text fontSize={12} mb={1}>
-                        1hr
-                    </Text>
-                    <FaChevronDown size={13} />
-                </Box>
+                {contact ? null : (
+                    <Box onClick={() => alert(123)}>
+                        <Text fontSize={12} mb={1}>
+                            1hr
+                        </Text>
+                        <FaChevronDown size={13} />
+                    </Box>
+                )}
             </Flex>
         </Tooltip>
     );

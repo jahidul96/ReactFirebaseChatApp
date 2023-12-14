@@ -35,18 +35,19 @@ function Login({ onClick }: loginInterFace) {
             });
         }
 
-        signinWithFb(email, password)
-            .then((_) => {
-                setLoading(false);
-                setIsLogged(true);
-            })
-            .catch((_) => {
-                setLoading(false);
-                return toast.warn("Something Went Wrong!", {
-                    position: "bottom-right",
+        setTimeout(() => {
+            signinWithFb(email, password)
+                .then((_) => {
+                    setIsLogged(true);
+                    setLoading(false);
+                })
+                .catch((_) => {
+                    setLoading(false);
+                    return toast.warn("Something Went Wrong!", {
+                        position: "bottom-right",
+                    });
                 });
-            });
-        setLoading(false);
+        }, 1500);
     };
 
     return (

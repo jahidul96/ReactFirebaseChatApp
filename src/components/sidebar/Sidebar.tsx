@@ -1,12 +1,13 @@
-import { Avatar, Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { AppContext } from "../../context/AppContextProvider";
-import { FaArrowRight } from "react-icons/fa";
 import ProfileSection from "./ProfileSection";
-import { MdCancel } from "react-icons/md";
+import { SidebarTopNav } from "./SideBarComp";
+import SidebarDrawer from "./SidebarDrawer";
+import CreateGroup from "./CreateGroup";
 
 const usersChats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -14,6 +15,8 @@ const Sidebar = () => {
     const context = useContext(AppContext);
     const { user } = context || {};
     const [seeProfile, setSeeProfile] = useState(false);
+    const [seeContacts, setSeeContacts] = useState(false);
+    const [createGroup, setCreateGroup] = useState(false);
 
     const changeToProfile = () => {
         setSeeProfile(!seeProfile);
@@ -33,46 +36,56 @@ const Sidebar = () => {
             {/* top profile section */}
             <Box
                 bg={AppColors.graySilver}
-                h={70}
+                minH={70}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
             >
-                <Flex justifyContent="space-between" alignItems="center" px={3}>
-                    {seeProfile ? (
-                        <Box></Box>
-                    ) : (
-                        <Avatar
-                            onClick={changeToProfile}
-                            size="md"
-                            cursor="pointer"
-                            name="userProfilePic"
-                            src={user ? user.profilePic : "/avator.jpg"}
-                            borderWidth={3}
-                            borderColor={AppColors.greenDark}
-                        />
-                    )}
-                    {/*  */}
-                    <Box onClick={changeToProfile} mt={1} cursor="pointer">
-                        {seeProfile ? (
-                            <MdCancel size={25} color="#fff" />
-                        ) : (
-                            <FaArrowRight size={22} color="#fff" />
-                        )}
-                    </Box>
-                </Flex>
+                <SidebarTopNav
+                    changeToProfile={changeToProfile}
+                    profilePic={user ? user.profilePic : "/avator.jpg"}
+                    changeToContacts={() => setSeeContacts(!seeContacts)}
+                    changeToCreateGroups={() => setCreateGroup(!createGroup)}
+                />
             </Box>
 
-            {/* profile or chats section */}
-            {seeProfile ? (
-                <ProfileSection />
-            ) : (
-                <Box flex={1} pt={3} overflowY={"auto"}>
-                    {usersChats.map((user: number) => (
-                        <ChatProfileComp key={user} id={user} />
-                    ))}
-                </Box>
-            )}
+            {/* chats */}
+            <Box height={"calc(100vh - 70px)"} overflowY="auto">
+                {usersChats.map((user: number) => (
+                    <ChatProfileComp key={user} id={user} contact={false} />
+                ))}
+            </Box>
+
+            {/* profile content */}
+            <SidebarDrawer
+                isOpen={seeProfile}
+                text="Profile"
+                closeDrawer={() => setSeeProfile(!seeProfile)}
+            >
+                <ProfileSection
+                    closeDrawer={() => setSeeProfile(!seeProfile)}
+                />
+            </SidebarDrawer>
+
+            {/* contacts content */}
+            <SidebarDrawer
+                isOpen={seeContacts}
+                text="Contacts"
+                closeDrawer={() => setSeeContacts(!seeContacts)}
+            >
+                {usersChats.map((user: number) => (
+                    <ChatProfileComp key={user} id={user} contact={true} />
+                ))}
+            </SidebarDrawer>
+
+            {/* create group drawer */}
+            <SidebarDrawer
+                isOpen={createGroup}
+                text="Create Groups"
+                closeDrawer={() => setCreateGroup(!createGroup)}
+            >
+                <CreateGroup />
+            </SidebarDrawer>
         </Box>
     );
 };

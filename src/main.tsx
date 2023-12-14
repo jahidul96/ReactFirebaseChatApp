@@ -21,6 +21,13 @@ const styles = {
 const config = {
     initialColorMode: "dark",
     useSystemColorMode: false,
+    components: {
+        Drawer: {
+            sizes: {
+                md: "350px", // Adjust the 'md' size to 350px
+            },
+        },
+    },
 };
 
 // 3. extend the theme
