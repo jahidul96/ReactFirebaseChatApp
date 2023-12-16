@@ -2,13 +2,56 @@ import { Box, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import ChatNav from "../../components/chat_comp/ChatNav";
 import ChatFooter from "../../components/chat_comp/ChatFooter";
-import { dummyChatTexts } from "../../data/dummyChatText";
-import { chatTextInterface } from "../../utils/interfaces/AppTypeInterfaces";
+import {
+    messageInterfaceWithDocId,
+    userDataInterface,
+} from "../../utils/interfaces/AppTypeInterfaces";
+import { useContext, useEffect, useState } from "react";
+import {
+    getAllMessages,
+    getCurrentUser,
+    oneToOneChat,
+} from "../../firebase/Fb_Firestore";
+import { AppContext } from "../../context/AppContextProvider";
 import ChatText from "../../components/chat_comp/ChatText";
 
 function ChatPage() {
-    const { userId } = useParams();
-    console.log(userId);
+    const { userId, isGroupChat } = useParams();
+    const context = useContext(AppContext);
+    const { user } = context || {};
+    const [text, setText] = useState("");
+    const [messages, setMessages] = useState<messageInterfaceWithDocId[] | []>(
+        []
+    );
+    const [friendDetails, setfriendDetails] = useState<userDataInterface | {}>(
+        {}
+    );
+
+    // console.log("this is userChatId or uid  ", userId);
+    // console.log("chatType  ", isGroupChat);
+
+    const sendText = () => {
+        if (isGroupChat == "false") {
+            oneToOneChat(text, user, friendDetails);
+            setText("");
+            console.log("text sended and chat added");
+        } else {
+        }
+
+        console.log("group chat");
+    };
+
+    useEffect(() => {
+        // getting friend data
+        getCurrentUser(userId ? userId : "").then((userData: any) => {
+            setfriendDetails(userData);
+        });
+
+        // getting all messages
+        getAllMessages(user?.uid, userId, setMessages);
+    }, [userId]);
+
+    // console.log("messages ", messages);
     return (
         <Box height={"100vh"} display="flex" flexDirection="column">
             {/* chatpage navbar */}
@@ -16,13 +59,22 @@ function ChatPage() {
 
             {/* chatpage text section */}
             <Box flex={1} overflowY="auto" px={3} py={4}>
-                {dummyChatTexts.map((chat: chatTextInterface, i: number) => (
-                    <ChatText key={i} chat={chat} />
-                ))}
+                {messages?.length == 0 ? (
+                    <Text>No text</Text>
+                ) : (
+                    messages.map((message: messageInterfaceWithDocId) => (
+                        <ChatText
+                            chat={message.messageDetails}
+                            key={message.docId}
+                            id={message.docId}
+                            currentUserId={user ? user.uid : ""}
+                        />
+                    ))
+                )}
             </Box>
 
             {/* chat footer */}
-            <ChatFooter />
+            <ChatFooter value={text} setValue={setText} onClick={sendText} />
         </Box>
     );
 }

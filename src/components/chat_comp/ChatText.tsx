@@ -1,24 +1,30 @@
 import { Box, Text, Tooltip } from "@chakra-ui/react";
-import { chatTextInterface } from "../../utils/interfaces/AppTypeInterfaces";
+import { messageInterface } from "../../utils/interfaces/AppTypeInterfaces";
 import { AppColors } from "../../utils/Colors";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 
 interface chatInterface {
-    chat: chatTextInterface;
+    chat: messageInterface;
+    id: string;
+    currentUserId: string;
 }
 
-function ChatText({ chat }: chatInterface) {
+function ChatText({ chat, id, currentUserId }: chatInterface) {
     return (
         <Box
             display="flex"
-            justifyContent={chat.senderId == 1 ? "flex-end" : "flex-start"}
+            justifyContent={
+                chat.senderDetails.uid == currentUserId
+                    ? "flex-end"
+                    : "flex-start"
+            }
             mb={3}
         >
             <Text
                 minW={55}
                 maxWidth={"70%"}
                 bg={
-                    chat.senderId == 1
+                    chat.senderDetails.uid == currentUserId
                         ? AppColors.greenDark
                         : AppColors.graySilver
                 }
@@ -26,9 +32,10 @@ function ChatText({ chat }: chatInterface) {
                 py={1}
                 borderRadius={5}
                 textAlign={
-                    chat.senderId == 1 && chat.text.length < 3
+                    chat.senderDetails.uid == currentUserId &&
+                    chat.text.length < 3
                         ? "start"
-                        : chat.senderId == 1
+                        : chat.senderDetails.uid == currentUserId
                         ? "end"
                         : "start"
                 }

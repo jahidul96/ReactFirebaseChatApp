@@ -1,7 +1,12 @@
 import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import { AppColors } from "../../utils/Colors";
 
-function ChatFooter() {
+interface chatFooterInterface {
+    setValue: any;
+    value: any;
+    onClick: any;
+}
+function ChatFooter({ setValue, value, onClick }: chatFooterInterface) {
     return (
         <Box h={70} bg={AppColors.graySilver} px={4}>
             <Flex justifyContent="space-between" alignItems="center" h="100%">
@@ -17,8 +22,13 @@ function ChatFooter() {
                         id="imageInput"
                     />
                 </>
-                <Input placeholder="Type your message" mr={3} />
-                <Button colorScheme="teal" variant="solid">
+                <Input
+                    placeholder="Type your message"
+                    mr={3}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                />
+                <Button colorScheme="teal" variant="solid" onClick={onClick}>
                     Send
                 </Button>
             </Flex>

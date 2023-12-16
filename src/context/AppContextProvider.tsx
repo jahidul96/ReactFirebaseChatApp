@@ -1,8 +1,15 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
-import { userDataInterface } from "../utils/interfaces/AppTypeInterfaces";
+import {
+    chatInterFace,
+    userDataInterface,
+} from "../utils/interfaces/AppTypeInterfaces";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebase_config";
-import { getCurrentUser } from "../firebase/Fb_Firestore";
+import {
+    getChats,
+    getContacts,
+    getCurrentUser,
+} from "../firebase/Fb_Firestore";
 
 export interface ContextProps {
     user: userDataInterface | null;
@@ -10,6 +17,8 @@ export interface ContextProps {
     appLoading: boolean;
     isLogged: boolean;
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
+    contacts: userDataInterface[] | [];
+    chats: chatInterFace[] | [];
 }
 
 export const AppContext = createContext<ContextProps | null>(null);
@@ -20,16 +29,21 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({
     const [user, setUser] = useState<userDataInterface | null>(null);
     const [appLoading, setAppLaoding] = useState(true);
     const [isLogged, setIsLogged] = useState(false);
+    const [contacts, setContacts] = useState<userDataInterface[] | []>([]);
+    const [chats, setChats] = useState<chatInterFace[] | []>([]);
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 getCurrentUser(user.uid).then((userData: any) => {
                     setUser(userData);
+                    // getting contacts/users except current user
+                    getContacts(setContacts);
+                    // getting all chats
+                    getChats(setChats, user.uid);
                     setAppLaoding(false);
                     setIsLogged(true);
                 });
-                // console.log("user", user);
             } else {
                 console.log("not logged in user");
                 setUser(null);
@@ -39,6 +53,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({
         });
     }, []);
 
+    // console.log("contatcs", contacts);
+
     return (
         <AppContext.Provider
             value={{
@@ -47,6 +63,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({
                 appLoading,
                 isLogged,
                 setIsLogged,
+                contacts,
+                chats,
             }}
         >
             {children}

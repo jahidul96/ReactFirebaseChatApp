@@ -1,19 +1,24 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
-import { useContext, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContextProvider";
 import ProfileSection from "./ProfileSection";
 import { SidebarTopNav } from "./SideBarComp";
 import SidebarDrawer from "./SidebarDrawer";
 import CreateGroup from "./CreateGroup";
+import {
+    chatInterFace,
+    userDataInterface,
+} from "../../utils/interfaces/AppTypeInterfaces";
+import EmptyInfoComp from "./EmptyInfoComp";
 
-const usersChats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const usersChats: userDataInterface[] = [];
 
 const Sidebar = () => {
     const context = useContext(AppContext);
-    const { user } = context || {};
+    const { user, contacts, chats } = context || {};
     const [seeProfile, setSeeProfile] = useState(false);
     const [seeContacts, setSeeContacts] = useState(false);
     const [createGroup, setCreateGroup] = useState(false);
@@ -51,9 +56,18 @@ const Sidebar = () => {
 
             {/* chats */}
             <Box height={"calc(100vh - 70px)"} overflowY="auto">
-                {usersChats.map((user: number) => (
-                    <ChatProfileComp key={user} id={user} contact={false} />
-                ))}
+                {chats?.length == 0 ? (
+                    <EmptyInfoComp text="No Chats Till Now! Go to Contatcs to new one!" />
+                ) : (
+                    chats?.map((chat: chatInterFace) => (
+                        <ChatProfileComp
+                            id={chat.chatInfos.uid}
+                            user={chat.chatInfos}
+                            contact={false}
+                            isGroupChat={chat.isGroupChat}
+                        />
+                    ))
+                )}
             </Box>
 
             {/* profile content */}
@@ -73,9 +87,17 @@ const Sidebar = () => {
                 text="Contacts"
                 closeDrawer={() => setSeeContacts(!seeContacts)}
             >
-                {usersChats.map((user: number) => (
-                    <ChatProfileComp key={user} id={user} contact={true} />
-                ))}
+                {contacts?.length == 0
+                    ? null
+                    : contacts?.map((user: userDataInterface) => (
+                          <ChatProfileComp
+                              user={user}
+                              id={user.uid}
+                              contact={true}
+                              closeDrawer={() => setSeeContacts(!seeContacts)}
+                              isGroupChat={false}
+                          />
+                      ))}
             </SidebarDrawer>
 
             {/* create group drawer */}

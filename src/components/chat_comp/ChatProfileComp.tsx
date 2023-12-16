@@ -3,12 +3,22 @@ import { Link as RouterLink } from "react-router-dom";
 import { AppColors } from "../../utils/Colors";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { userDataInterface } from "../../utils/interfaces/AppTypeInterfaces";
 
 interface chatprofilecompInterface {
-    id: number;
+    id: string;
     contact: boolean;
+    closeDrawer?: any;
+    user: userDataInterface;
+    isGroupChat?: boolean;
 }
-function ChatProfileComp({ id, contact }: chatprofilecompInterface) {
+function ChatProfileComp({
+    id,
+    contact,
+    closeDrawer,
+    user,
+    isGroupChat,
+}: chatprofilecompInterface) {
     return (
         <Tooltip label={"Last msg"} fontSize="smaller">
             <Flex
@@ -19,7 +29,8 @@ function ChatProfileComp({ id, contact }: chatprofilecompInterface) {
                 alignItems="center"
             >
                 <Link
-                    to={`/chat/${id}`}
+                    to={`/chat/${id}/${isGroupChat}`}
+                    onClick={closeDrawer}
                     _hover={{ textDecoration: "none" }}
                     as={RouterLink}
                     cursor="pointer"
@@ -28,7 +39,7 @@ function ChatProfileComp({ id, contact }: chatprofilecompInterface) {
                     <Flex alignItems={contact ? "center" : ""}>
                         {/* profile pic */}
                         <Image
-                            src="/avator.jpg"
+                            src={user ? user.profilePic : "/avator.jpg"}
                             w={41}
                             h={41}
                             borderRadius={20}
@@ -37,7 +48,7 @@ function ChatProfileComp({ id, contact }: chatprofilecompInterface) {
                         {/* name and last msg */}
                         <Box flex={1} ml={3}>
                             <Text fontSize={14} fontWeight="bold">
-                                Jahidul Islam
+                                {user ? user.name : "Name"}
                             </Text>
 
                             {contact ? null : (
