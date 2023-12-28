@@ -38,10 +38,7 @@ function App() {
                             path="/updateprofile"
                             element={<UpdateProfilePage />}
                         />
-                        <Route
-                            path="/chat/:userId/:isGroupChat"
-                            element={<ChatPage />}
-                        />
+                        <Route path="/chat/:userId" element={<ChatPage />} />
                     </Routes>
                 </Layout>
             )}

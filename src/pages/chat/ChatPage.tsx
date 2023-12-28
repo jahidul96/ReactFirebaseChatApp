@@ -6,7 +6,7 @@ import {
     messageInterfaceWithDocId,
     userDataInterface,
 } from "../../utils/interfaces/AppTypeInterfaces";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
     getAllMessages,
     getCurrentUser,
@@ -16,10 +16,11 @@ import { AppContext } from "../../context/AppContextProvider";
 import ChatText from "../../components/chat_comp/ChatText";
 
 function ChatPage() {
-    const { userId, isGroupChat } = useParams();
+    const { userId } = useParams();
     const context = useContext(AppContext);
     const { user } = context || {};
     const [text, setText] = useState("");
+    const scrollRef = useRef(null);
     const [messages, setMessages] = useState<messageInterfaceWithDocId[] | []>(
         []
     );
@@ -31,12 +32,9 @@ function ChatPage() {
     // console.log("chatType  ", isGroupChat);
 
     const sendText = () => {
-        if (isGroupChat == "false") {
-            oneToOneChat(text, user, friendDetails);
-            setText("");
-            console.log("text sended and chat added");
-        } else {
-        }
+        oneToOneChat(text, user, friendDetails);
+        setText("");
+        console.log("text sended and chat added");
 
         console.log("group chat");
     };
@@ -55,7 +53,7 @@ function ChatPage() {
     return (
         <Box height={"100vh"} display="flex" flexDirection="column">
             {/* chatpage navbar */}
-            <ChatNav />
+            <ChatNav userDetails={friendDetails} />
 
             {/* chatpage text section */}
             <Box flex={1} overflowY="auto" px={3} py={4}>

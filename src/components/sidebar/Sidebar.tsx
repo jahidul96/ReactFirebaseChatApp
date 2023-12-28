@@ -7,21 +7,17 @@ import { AppContext } from "../../context/AppContextProvider";
 import ProfileSection from "./ProfileSection";
 import { SidebarTopNav } from "./SideBarComp";
 import SidebarDrawer from "./SidebarDrawer";
-import CreateGroup from "./CreateGroup";
 import {
     chatInterFace,
     userDataInterface,
 } from "../../utils/interfaces/AppTypeInterfaces";
 import EmptyInfoComp from "./EmptyInfoComp";
 
-const usersChats: userDataInterface[] = [];
-
 const Sidebar = () => {
     const context = useContext(AppContext);
     const { user, contacts, chats } = context || {};
     const [seeProfile, setSeeProfile] = useState(false);
     const [seeContacts, setSeeContacts] = useState(false);
-    const [createGroup, setCreateGroup] = useState(false);
 
     const changeToProfile = () => {
         setSeeProfile(!seeProfile);
@@ -50,7 +46,6 @@ const Sidebar = () => {
                     changeToProfile={changeToProfile}
                     profilePic={user ? user.profilePic : "/avator.jpg"}
                     changeToContacts={() => setSeeContacts(!seeContacts)}
-                    changeToCreateGroups={() => setCreateGroup(!createGroup)}
                 />
             </Box>
 
@@ -64,7 +59,8 @@ const Sidebar = () => {
                             id={chat.chatInfos.uid}
                             user={chat.chatInfos}
                             contact={false}
-                            isGroupChat={chat.isGroupChat}
+                            lastMsg={chat.lastMsg}
+                            lastMsgTime={chat.lastMsgAt}
                         />
                     ))
                 )}
@@ -95,18 +91,8 @@ const Sidebar = () => {
                               id={user.uid}
                               contact={true}
                               closeDrawer={() => setSeeContacts(!seeContacts)}
-                              isGroupChat={false}
                           />
                       ))}
-            </SidebarDrawer>
-
-            {/* create group drawer */}
-            <SidebarDrawer
-                isOpen={createGroup}
-                text="Create Groups"
-                closeDrawer={() => setCreateGroup(!createGroup)}
-            >
-                <CreateGroup />
             </SidebarDrawer>
         </Box>
     );

@@ -4,23 +4,26 @@ import { AppColors } from "../../utils/Colors";
 import { FaChevronDown } from "react-icons/fa6";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { userDataInterface } from "../../utils/interfaces/AppTypeInterfaces";
+import TimeAgo from "timeago-react";
 
 interface chatprofilecompInterface {
     id: string;
     contact: boolean;
     closeDrawer?: any;
     user: userDataInterface;
-    isGroupChat?: boolean;
+    lastMsg?: string;
+    lastMsgTime?: Date;
 }
 function ChatProfileComp({
     id,
     contact,
     closeDrawer,
     user,
-    isGroupChat,
+    lastMsg,
+    lastMsgTime,
 }: chatprofilecompInterface) {
     return (
-        <Tooltip label={"Last msg"} fontSize="smaller">
+        <Tooltip label={lastMsg} fontSize="smaller">
             <Flex
                 cursor="pointer"
                 py={4}
@@ -29,7 +32,7 @@ function ChatProfileComp({
                 alignItems="center"
             >
                 <Link
-                    to={`/chat/${id}/${isGroupChat}`}
+                    to={`/chat/${id}`}
                     onClick={closeDrawer}
                     _hover={{ textDecoration: "none" }}
                     as={RouterLink}
@@ -55,7 +58,11 @@ function ChatProfileComp({
                                 <Flex alignItems="center">
                                     <IoCheckmarkDoneOutline size={16} />
                                     <Text fontSize={12} ml={1}>
-                                        last msg
+                                        {lastMsg
+                                            ? lastMsg?.length > 24
+                                                ? lastMsg?.slice(0, 24) + "..."
+                                                : lastMsg
+                                            : " "}
                                     </Text>
                                 </Flex>
                             )}
@@ -65,10 +72,20 @@ function ChatProfileComp({
 
                 {/* time and delete features */}
                 {contact ? null : (
-                    <Box onClick={() => alert(123)}>
-                        <Text fontSize={12} mb={1}>
-                            1hr
-                        </Text>
+                    <Box
+                        onClick={() => alert(123)}
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="flex-end"
+                    >
+                        <TimeAgo
+                            style={{
+                                fontSize: 10,
+                            }}
+                            datetime={lastMsgTime ? lastMsgTime : ""}
+                            locale="bd"
+                        />
+
                         <FaChevronDown size={13} />
                     </Box>
                 )}

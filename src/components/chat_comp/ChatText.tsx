@@ -2,6 +2,7 @@ import { Box, Text, Tooltip } from "@chakra-ui/react";
 import { messageInterface } from "../../utils/interfaces/AppTypeInterfaces";
 import { AppColors } from "../../utils/Colors";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import TimeAgo from "timeago-react";
 
 interface chatInterface {
     chat: messageInterface;
@@ -12,6 +13,7 @@ interface chatInterface {
 function ChatText({ chat, id, currentUserId }: chatInterface) {
     return (
         <Box
+            // this div for separating message into two side
             display="flex"
             justifyContent={
                 chat.senderDetails.uid == currentUserId
@@ -20,7 +22,8 @@ function ChatText({ chat, id, currentUserId }: chatInterface) {
             }
             mb={3}
         >
-            <Text
+            {/* this div for auto-expandable div size */}
+            <Box
                 minW={55}
                 maxWidth={"70%"}
                 bg={
@@ -31,28 +34,29 @@ function ChatText({ chat, id, currentUserId }: chatInterface) {
                 px={2}
                 py={1}
                 borderRadius={5}
-                textAlign={
-                    chat.senderDetails.uid == currentUserId &&
-                    chat.text.length < 3
-                        ? "start"
-                        : chat.senderDetails.uid == currentUserId
-                        ? "end"
-                        : "start"
-                }
-                fontSize={13}
+                display="flex"
+                flexDirection="column"
+                // justifyContent={
+                //     chat.senderDetails.uid == currentUserId ? "end" : "start"
+                // }
             >
-                {chat.text}
+                <Text fontSize={13}>{chat.text}</Text>
                 <Box
                     display="flex"
                     justifyContent="flex-end"
                     alignItems="center"
                 >
-                    <Text fontSize={10} mr={1}>
-                        1hr ago
-                    </Text>
+                    <TimeAgo
+                        style={{
+                            fontSize: 9,
+                            marginRight: 3,
+                        }}
+                        datetime={chat.createdAt ? chat.createdAt : ""}
+                        locale="bd"
+                    />
                     <IoCheckmarkDoneOutline size={16} />
                 </Box>
-            </Text>
+            </Box>
         </Box>
     );
 }
