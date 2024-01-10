@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 
 import ChatProfileComp from "../chat_comp/ChatProfileComp";
 import { AppColors } from "../../utils/Colors";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContextProvider";
 import ProfileSection from "./ProfileSection";
 import { SidebarTopNav } from "./SideBarComp";
@@ -22,6 +22,10 @@ const Sidebar = () => {
     const changeToProfile = () => {
         setSeeProfile(!seeProfile);
     };
+
+    // console.log("user data", user);
+    // console.log("contacts", contacts);
+    // console.log("chats", chats);
 
     return (
         <Box
@@ -54,13 +58,16 @@ const Sidebar = () => {
                 {chats?.length == 0 ? (
                     <EmptyInfoComp text="No Chats Till Now! Go to Contatcs to new one!" />
                 ) : (
-                    chats?.map((chat: chatInterFace) => (
+                    chats?.map((chat: chatInterFace, index: number) => (
                         <ChatProfileComp
                             id={chat.chatInfos.uid}
-                            user={chat.chatInfos}
+                            chatUser={chat.chatInfos}
                             contact={false}
                             lastMsg={chat.lastMsg}
                             lastMsgTime={chat.lastMsgAt}
+                            seen={chat.seen}
+                            senderId={chat.senderId}
+                            key={index.toString()}
                         />
                     ))
                 )}
@@ -69,7 +76,7 @@ const Sidebar = () => {
             {/* profile content */}
             <SidebarDrawer
                 isOpen={seeProfile}
-                text="Profile"
+                headerTitle="Profile"
                 closeDrawer={() => setSeeProfile(!seeProfile)}
             >
                 <ProfileSection
@@ -80,19 +87,25 @@ const Sidebar = () => {
             {/* contacts content */}
             <SidebarDrawer
                 isOpen={seeContacts}
-                text="Contacts"
+                headerTitle="Contacts"
                 closeDrawer={() => setSeeContacts(!seeContacts)}
             >
                 {contacts?.length == 0
                     ? null
-                    : contacts?.map((user: userDataInterface) => (
-                          <ChatProfileComp
-                              user={user}
-                              id={user.uid}
-                              contact={true}
-                              closeDrawer={() => setSeeContacts(!seeContacts)}
-                          />
-                      ))}
+                    : contacts?.map(
+                          (contact: userDataInterface, index: number) => (
+                              <ChatProfileComp
+                                  chatUser={contact}
+                                  id={contact.uid}
+                                  contact={true}
+                                  closeDrawer={() =>
+                                      setSeeContacts(!seeContacts)
+                                  }
+                                  seen={true}
+                                  key={index.toString()}
+                              />
+                          )
+                      )}
             </SidebarDrawer>
         </Box>
     );

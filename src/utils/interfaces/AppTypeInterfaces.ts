@@ -1,12 +1,11 @@
 export interface messageInterface {
-    senderDetails: userDataInterface;
+    senderId: string;
     text: string;
     media: boolean;
     fileUrl: string;
-    isGroupChat: boolean;
     delivered: boolean;
     seen: boolean;
-    createdAt: Date;
+    createdAt: number;
 }
 
 export interface messageInterfaceWithDocId {
@@ -18,22 +17,20 @@ export interface userDataInterface {
     name: string;
     uid: string;
     profilePic: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: number;
+    updatedAt: number;
     bio: string;
     email: string;
 }
 
 export interface chatInterFace {
-    isGroupChat: boolean;
     lastMsg: string;
     media: boolean;
-    lastMsgAt: Date;
-    createdAt: Date;
-    chatMembers: Array<string>;
+    lastMsgAt: number;
+    createdAt: number;
     chatInfos: userDataInterface; // in here when it's oneToOneChat we will send senderDetails when group we will send groupDetail(like profilepic etc)
-    adminDetails: userDataInterface | {}; // in here oneToOne chat {} when group chat group admin details
     delivered: boolean;
     chatId: string;
     seen: boolean;
+    senderId: string;
 }

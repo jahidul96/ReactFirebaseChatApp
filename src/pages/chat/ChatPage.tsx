@@ -14,6 +14,9 @@ import {
 } from "../../firebase/Fb_Firestore";
 import { AppContext } from "../../context/AppContextProvider";
 import ChatText from "../../components/chat_comp/ChatText";
+import { scrollToBottom } from "../../util_Functions/Util_Functions";
+import SidebarDrawer from "../../components/sidebar/SidebarDrawer";
+import ProfileChildernComp from "../../components/sidebar/ProfileChildernComp";
 
 function ChatPage() {
     const { userId } = useParams();
@@ -27,18 +30,21 @@ function ChatPage() {
     const [friendDetails, setfriendDetails] = useState<userDataInterface | {}>(
         {}
     );
+    const [seeProfile, setSeeProfile] = useState(false);
 
-    // console.log("this is userChatId or uid  ", userId);
-    // console.log("chatType  ", isGroupChat);
-
+    // send text
     const sendText = () => {
-        oneToOneChat(text, user, friendDetails);
-        setText("");
-        console.log("text sended and chat added");
-
-        console.log("group chat");
+        if (user) {
+            if (text == "") {
+                console.log("text is empty!!!");
+                return;
+            }
+            oneToOneChat(text, user, friendDetails);
+            setText("");
+        }
     };
 
+    // getting data
     useEffect(() => {
         // getting friend data
         getCurrentUser(userId ? userId : "").then((userData: any) => {
@@ -46,19 +52,31 @@ function ChatPage() {
         });
 
         // getting all messages
-        getAllMessages(user?.uid, userId, setMessages);
+        if (user && userId) {
+            getAllMessages(user?.uid, userId, setMessages);
+        }
     }, [userId]);
 
-    // console.log("messages ", messages);
+    // scrolling auto
+    useEffect(() => {
+        // Scroll to bottom when messages change
+        scrollToBottom(scrollRef);
+    }, [messages]);
+
     return (
         <Box height={"100vh"} display="flex" flexDirection="column">
             {/* chatpage navbar */}
-            <ChatNav userDetails={friendDetails} />
+            <ChatNav
+                userDetails={friendDetails}
+                onClick={() => setSeeProfile(!seeProfile)}
+            />
 
             {/* chatpage text section */}
             <Box flex={1} overflowY="auto" px={3} py={4}>
-                {messages?.length == 0 ? (
-                    <Text>No text</Text>
+                {messages?.length === 0 ? (
+                    <Text textAlign="center">
+                        No text Yet! Send a text to start the conversation!
+                    </Text>
                 ) : (
                     messages.map((message: messageInterfaceWithDocId) => (
                         <ChatText
@@ -69,10 +87,29 @@ function ChatPage() {
                         />
                     ))
                 )}
+                <div ref={scrollRef} />
             </Box>
 
             {/* chat footer */}
             <ChatFooter value={text} setValue={setText} onClick={sendText} />
+
+            {/* friendDetails drawer */}
+            <SidebarDrawer
+                isOpen={seeProfile}
+                headerTitle={`${friendDetails?.name} Details`}
+                closeDrawer={() => setSeeProfile(!seeProfile)}
+                direction
+            >
+                <ProfileChildernComp
+                    children={<></>}
+                    bio={friendDetails.bio}
+                    name={friendDetails.name}
+                    email={friendDetails.email}
+                    closeDrawer={() => setSeeProfile(!seeProfile)}
+                    link={false}
+                    profilePic={friendDetails.profilePic}
+                />
+            </SidebarDrawer>
         </Box>
     );
 }

@@ -1,4 +1,4 @@
-import { Box, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { messageInterface } from "../../utils/interfaces/AppTypeInterfaces";
 import { AppColors } from "../../utils/Colors";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -10,15 +10,13 @@ interface chatInterface {
     currentUserId: string;
 }
 
-function ChatText({ chat, id, currentUserId }: chatInterface) {
+function ChatText({ chat, currentUserId }: chatInterface) {
     return (
         <Box
             // this div for separating message into two side
             display="flex"
             justifyContent={
-                chat.senderDetails.uid == currentUserId
-                    ? "flex-end"
-                    : "flex-start"
+                chat.senderId == currentUserId ? "flex-end" : "flex-start"
             }
             mb={3}
         >
@@ -27,7 +25,7 @@ function ChatText({ chat, id, currentUserId }: chatInterface) {
                 minW={55}
                 maxWidth={"70%"}
                 bg={
-                    chat.senderDetails.uid == currentUserId
+                    chat.senderId == currentUserId
                         ? AppColors.greenDark
                         : AppColors.graySilver
                 }

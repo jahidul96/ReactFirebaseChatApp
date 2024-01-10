@@ -5,7 +5,6 @@ import {
     Input,
     Stack,
     Text,
-    Container,
     Spinner,
 } from "@chakra-ui/react";
 import { ChangeEvent, useContext, useState } from "react";
@@ -15,6 +14,7 @@ import { uploadFileToStorage } from "../../firebase/Fb_Storage";
 import { fbUserRegister } from "../../firebase/Fb_Auth";
 import { addUserToFB } from "../../firebase/Fb_Firestore";
 import { AppContext } from "../../context/AppContextProvider";
+import { fbErrorDetect } from "../../firebase/Fb_Error";
 
 interface signupInterFace {
     onClick: any;
@@ -28,7 +28,7 @@ const SignUp = ({ onClick }: signupInterFace) => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const context = useContext(AppContext);
-    const { setIsLogged } = context || {};
+    const { setIsLogged, setUser } = context || {};
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files[0];
@@ -66,29 +66,38 @@ const SignUp = ({ onClick }: signupInterFace) => {
         };
 
         if (imageFile) {
-            uploadFileToStorage(imageFile)
-                .then((url: any) => {
-                    fbUserRegister(email, password).then((uid: any) => {
-                        userData.uid = uid;
-                        userData.profilePic = url;
-                        addUserToFB(userData, uid);
-                        setLoading(false);
-                        setIsLogged(true);
+            fbUserRegister(email, password)
+                .then((uid: any) => {
+                    uploadFileToStorage(imageFile)
+                        .then((url: any) => {
+                            userData.uid = uid;
+                            userData.profilePic = url;
+                            addUserToFB(userData, uid);
+                            setLoading(false);
+                            setIsLogged(true);
+                            setUser(userData);
 
-                        return toast.success("Profile Created Succesfully!", {
-                            position: "bottom-right",
+                            return toast.success(
+                                "Profile Created Succesfully!",
+                                {
+                                    position: "bottom-right",
+                                }
+                            );
+                        })
+                        .catch((_) => {
+                            setLoading(false);
+                            return toast.warn("ProfilePic Uploaded Wrong", {
+                                position: "bottom-right",
+                            });
                         });
-                    });
                 })
-                .catch((_) => {
+                .catch((err) => {
                     setLoading(false);
-                    return toast.warn("Profile Pic uploading Problem!", {
-                        position: "bottom-right",
-                    });
+                    fbErrorDetect(err.errorCode);
                 });
         } else {
             setLoading(false);
-            return toast.warn("Add a profile pic it's a must!", {
+            return toast.warn("Something Went Wrong!", {
                 position: "bottom-right",
             });
         }

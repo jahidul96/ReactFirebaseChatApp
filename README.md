@@ -1,30 +1,47 @@
-# React + TypeScript + Vite
+# Firebase and React js one to one Chatapp.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Config
 
-Currently, two official plugins are available:
+-   I have removed my firebase api key from firebase/firebase.config.ts.. if you want to run this add a firebase project in firebase console then add your own firebase key in firebase/firebase.config.ts file. then you can run smoothly in your device!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# App Features
 
-## Expanding the ESLint configuration
+-   For simplicity used email/password auth!.
+-   user can add a profile picture(firebase storage)
+-   one to one chat
+-   Realtime with firebase realtime snapshot update
+-   Image share
+-   Delete Whole chat from one side!
+-   Last message show and update
+-   On New message badge show
+-   Profile screen
+-   Profile details update
+-   auto scroll to lastChat
+-   Logout and more
+-   Contacts which is just all user who are using app!!
+-   Chatter profile details
+-   Last msg update
+-   Message time update
+-   etc
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+#What more wanted to do!!
 
-- Configure the top-level `parserOptions` property like this:
+-   Reply specific message
+-   react on message
+-   blocking features
+-   realtime active status more...
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+#what used so far
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+-   chakra-ui/react
+-   emotion/react
+-   emotion/styled
+-   firebase
+-   framer-motion
+-   react
+-   react-icons
+-   react-modern-drawer
+-   react-router-dom
+-   react-toastify
+-   timeago-react
+-   vite(dev dependecies/for app initialization)

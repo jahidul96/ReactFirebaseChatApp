@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { signinWithFb } from "../../firebase/Fb_Auth";
 import { Navigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContextProvider";
+import { fbErrorDetect } from "../../firebase/Fb_Error";
 
 interface loginInterFace {
     onClick: any;
@@ -41,11 +42,9 @@ function Login({ onClick }: loginInterFace) {
                     setIsLogged(true);
                     setLoading(false);
                 })
-                .catch((_) => {
+                .catch((error) => {
                     setLoading(false);
-                    return toast.warn("Something Went Wrong!", {
-                        position: "bottom-right",
-                    });
+                    fbErrorDetect(error.errorCode);
                 });
         }, 1500);
     };

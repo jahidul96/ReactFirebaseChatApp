@@ -6,13 +6,15 @@ import { userDataInterface } from "../../utils/interfaces/AppTypeInterfaces";
 
 interface chatNavInterface {
     userDetails: userDataInterface;
+    onClick: any;
 }
 
-function ChatNav({ userDetails }: chatNavInterface) {
+function ChatNav({ userDetails, onClick }: chatNavInterface) {
     return (
         <Box h={63} bg={AppColors.graySilver} px={4}>
             <Flex justifyContent="space-between" alignItems="center" h="100%">
-                <Flex alignItems="center" cursor="pointer">
+                {/* profile section */}
+                <Flex alignItems="center" cursor="pointer" onClick={onClick}>
                     <Image
                         src={
                             userDetails
@@ -30,6 +32,7 @@ function ChatNav({ userDetails }: chatNavInterface) {
                     </Box>
                 </Flex>
 
+                {/* icon section */}
                 <Flex>
                     <IoSearch size={20} cursor="pointer" />
                     <Box ml={8}>

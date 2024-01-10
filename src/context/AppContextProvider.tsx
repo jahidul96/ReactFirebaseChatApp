@@ -19,6 +19,8 @@ export interface ContextProps {
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
     contacts: userDataInterface[] | [];
     chats: chatInterFace[] | [];
+    setContacts: React.Dispatch<React.SetStateAction<userDataInterface[] | []>>;
+    setChats: React.Dispatch<React.SetStateAction<chatInterFace[] | []>>;
 }
 
 export const AppContext = createContext<ContextProps | null>(null);
@@ -64,7 +66,9 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({
                 isLogged,
                 setIsLogged,
                 contacts,
+                setContacts,
                 chats,
+                setChats,
             }}
         >
             {children}
